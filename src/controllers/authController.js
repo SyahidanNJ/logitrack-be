@@ -1,6 +1,15 @@
 const authService = require("../services/authService");
 const respond = require("../tools/response");
 
+// Cross-site (FE dan BE beda domain) butuh SameSite=None; Secure saat production,
+// dev/localhost tetap default agar cookie tidak ditolak browser.
+const isProd = process.env.NODE_ENV === "production";
+const cookieOpts = {
+  httpOnly: true,
+  maxAge: 12 * 60 * 60 * 1000, // 12 hours
+  ...(isProd ? { secure: true, sameSite: "none" } : {}),
+};
+
 const login = async (req, res) => {
   try {
     const { nik, password } = req.body;
@@ -14,10 +23,7 @@ const login = async (req, res) => {
       return respond(res, req, "loginFailed", null, 401, true);
     }
 
-    res.cookie("SESSION-LOGITRACK", result.token, {
-      httpOnly: true,
-      maxAge: 12 * 60 * 60 * 1000 // 12 hours
-    });
+    res.cookie("SESSION-LOGITRACK", result.token, cookieOpts);
 
     return respond(res, req, "loginSuccess", result.user, 200, false);
   } catch (error) {
@@ -39,10 +45,7 @@ const sso = async (req, res) => {
       return respond(res, req, "unauthorized", null, 401, true);
     }
 
-    res.cookie("SESSION-LOGITRACK", result.token, {
-      httpOnly: true,
-      maxAge: 12 * 60 * 60 * 1000
-    });
+    res.cookie("SESSION-LOGITRACK", result.token, cookieOpts);
 
     return respond(res, req, "loginSuccess", result.user, 200, false);
   } catch (error) {
@@ -65,7 +68,7 @@ const logout = (req, res) => {
     }
   }
   
-  res.clearCookie("SESSION-LOGITRACK");
+  res.clearCookie("SESSION-LOGITRACK", cookieOpts);
   return respond(res, req, "logoutSuccess", null, 200, false);
 };
 

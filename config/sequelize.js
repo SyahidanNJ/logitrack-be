@@ -121,8 +121,11 @@ const logitrackModels = loadModels(sequelizeLogitrack, "../src/models");
 const employeeModels = loadModels(sequelizeEmployee, "../src/models_employee");
 
 // ── Sync DBs (creates tables if not exist) ───────────────────────────
+// alter hanya di non-production; di production schema dianggap stabil
+// agar tidak ada perubahan/hilang kolom saat service restart.
+const syncAlter = process.env.NODE_ENV !== "production";
 sequelizeLogitrack
-  .sync({ alter: true })
+  .sync({ alter: syncAlter })
   .then(async () => {
     // Seed departments if empty
     const count = await logitrackModels.MstDepartment.count();
@@ -140,7 +143,7 @@ sequelizeLogitrack
   .catch((err) => console.error("[DB] logitrack sync error:", err.message));
 
 sequelizeEmployee
-  .sync({ alter: true })
+  .sync({ alter: syncAlter })
   .then(async () => {
     // Seed an admin employee if empty
     const md5 = require("md5");
