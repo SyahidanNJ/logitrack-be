@@ -1,0 +1,21 @@
+{
+  "success": "Success",
+  "notFound": "No data found",
+  "badRequest": "Bad request",
+  "unauthorized": "Unauthorized",
+  "forbidden": "Forbidden access",
+  "serverError": "Internal server error",
+  "loginSuccess": "Login successful",
+  "loginFailed": "Invalid NIK or password",
+  "logoutSuccess": "Logout successful",
+  "warehouseCreated": "Warehouse created successfully",
+  "zoneCreated": "Zone created successfully",
+  "binCreated": "Bin location created successfully",
+  "productCreated": "Product created successfully",
+  "checkInCreated": "Check-in recorded successfully",
+  "checkOutCreated": "Check-out processed successfully",
+  "insufficientStock": "Stok tidak mencukupi untuk memproses check-out",
+  "binCapacityExceeded": "Kapasitas bin location tidak mencukupi",
+  "alertConfigSaved": "Stock alert configuration saved",
+  "stockNegativePrevented": "Transaksi ditolak: stok akan bernilai minus"
+}
