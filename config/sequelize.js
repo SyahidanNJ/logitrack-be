@@ -48,6 +48,11 @@ function buildInstance(prefix, dialect) {
       logging: p[`${PRE}LOGGING`] === "true" ? console.log : false,
       dialectOptions: {
         connectTimeout: Number(p[`${PRE}DIALECT_CONNECT_TIMEOUT`] || 60000),
+        // TiDB Cloud (dan managed MySQL lain) mewajibkan TLS.
+        // Aktifkan via MYSQL_SSL=true di production; lokal tetap tanpa SSL.
+        ...(p.MYSQL_SSL === "true"
+          ? { ssl: { minVersion: "TLSv1.2", rejectUnauthorized: true } }
+          : {}),
       },
       define: {
         underscored: true,
@@ -80,7 +85,12 @@ const authenticateDB = async (instance, name) => {
           host: process.env[`MYSQL_${name}_HOST`] || "localhost",
           port: Number(process.env[`MYSQL_${name}_PORT`] || 3306),
           dialect: "mysql",
-          logging: false
+          logging: false,
+          dialectOptions: {
+            ...(process.env.MYSQL_SSL === "true"
+              ? { ssl: { minVersion: "TLSv1.2", rejectUnauthorized: true } }
+              : {}),
+          }
         }
       );
       await tempInstance.query(`CREATE DATABASE IF NOT EXISTS \`${process.env[`MYSQL_${name}_NAME`]}\`;`);
