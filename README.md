@@ -23,21 +23,6 @@ Antarmuka penggunanya ada di repo terpisah:
 - Validasi request dengan Joi, unggah berkas dengan multer, CORS berbasis daftar
   origin yang diizinkan.
 
-## Jalan lokal (Windows)
-
-1. Siapkan MySQL 8 (lokal atau `docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=root mysql:8.0`).
-   Database `db_logitrack` dan `db_employee` dibuat otomatis saat server pertama
-   kali jalan.
-2. `copy env/.env.render.example env/.env.dev` → isi `MYSQL_LOGITRACK_*`,
-   `MYSQL_EMPLOYEE_*`, `JWT_SECRET`, dan `MYSQL_SSL=false` untuk MySQL lokal.
-3. `npm install` → `npm run dev` (memakai `env/.env.dev`).
-4. Cek `GET http://localhost:3003/api/health`.
-5. Login seed otomatis saat database masih kosong: NIK `ADMIN-001`, kata sandi
-   `password123`.
-
-Tabel dibuat lewat `sequelize.sync({ alter: true })` di mode non-production.
-Di production, schema dianggap stabil supaya kolom tidak berubah saat restart.
-
 ## Endpoint utama
 
 | Grup | Contoh |
